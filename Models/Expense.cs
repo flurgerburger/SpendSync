@@ -24,8 +24,7 @@ public class Expense
 
     [StringLength(250, ErrorMessage = "Notes cannot exceed 250 characters.")]
     public string? Notes { get; set; }
-
-    // Predefined Philippine-localized options for UI dropdowns
+ 
     public static readonly List<string> Categories =
     [
         "Food & Dining",

@@ -12,8 +12,7 @@ public class ExpenseStateService
     private readonly List<Subscription> _subscriptions = [];
 
     /// <summary>
-    /// Event triggered when state changes (add, update, delete).
-    /// Blazor pages/components subscribe to this to call StateHasChanged().
+    /// Event triggered when state changes.
     /// </summary>
     public event Action? OnChange;
 
@@ -131,7 +130,6 @@ public class ExpenseStateService
     /// </summary>
     private void SeedSampleData()
     {
-        // Sample Philippine Expenses
         _expenses.AddRange([
             new Expense
             {
@@ -180,7 +178,6 @@ public class ExpenseStateService
             }
         ]);
 
-        // Sample Philippine Subscriptions
         _subscriptions.AddRange([
             new Subscription
             {

@@ -38,10 +38,9 @@ public class Subscription
         "Yearly" => Math.Round(Amount / 12m, 2),
         "Quarterly" => Math.Round(Amount / 3m, 2),
         "Weekly" => Math.Round(Amount * 4.33m, 2),
-        _ => Amount // Default is Monthly
+        _ => Amount
     };
 
-    // Predefined options for UI dropdowns
     public static readonly List<string> BillingCycles =
     [
         "Monthly",

@@ -20,7 +20,6 @@
     top: 0.5rem;
 }
 /* /Components/Layout/NavMenu.razor.rz.scp.css */
-/* Top navigation bar custom styles if needed */
 /* /Components/Layout/ReconnectModal.razor.rz.scp.css */
 .components-reconnect-first-attempt-visible[b-hfcg6475vz],
 .components-reconnect-repeated-attempt-visible[b-hfcg6475vz],
@@ -180,7 +179,6 @@
     }
 }
 /* /Pages/Dashboard.razor.rz.scp.css */
-/* Dashboard isolated styles */
 .dashboard-card[b-q8d5iqozh5] {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -189,12 +187,10 @@
     transform: translateY(-2px);
 }
 /* /Pages/Expenses.razor.rz.scp.css */
-/* Expenses isolated styles */
 .expense-row:hover[b-piijv77dtf] {
     background-color: rgba(30, 136, 229, 0.04);
 }
 /* /Pages/Subscriptions.razor.rz.scp.css */
-/* Subscriptions isolated styles */
 .subscription-badge[b-xaaz72u2b3] {
     font-weight: 600;
 }
