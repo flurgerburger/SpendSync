@@ -46,4 +46,4 @@
    dotnet run
    ```
 
-4. Open your browser and navigate to `https://localhost:7198` (or the HTTP/HTTPS port shown in your terminal).
+4. Open your browser and navigate to `http://localhost:5289` (or the HTTP/HTTPS port shown in your terminal).
