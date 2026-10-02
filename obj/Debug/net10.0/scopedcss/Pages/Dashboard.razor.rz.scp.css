@@ -1,7 +1,1 @@
-.dashboard-card[b-q8d5iqozh5] {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.dashboard-card:hover[b-q8d5iqozh5] {
-    transform: translateY(-2px);
-}
+/* Styles refactored to Tailwind utility classes in Dashboard.razor */

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SpendSync")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9348695cd6d466c1795d10ea93e162bfed25a925")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6274284fe429b21b626d71d056c6f005ba9e98b")]
 [assembly: System.Reflection.AssemblyProductAttribute("SpendSync")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SpendSync")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

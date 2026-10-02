@@ -1,3 +1,1 @@
-.expense-row:hover[b-piijv77dtf] {
-    background-color: rgba(30, 136, 229, 0.04);
-}
+/* Styles refactored to Tailwind utility classes in Expenses.razor */

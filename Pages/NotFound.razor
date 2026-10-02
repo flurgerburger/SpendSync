@@ -1,5 +1,15 @@
-﻿@page "/not-found"
+@page "/not-found"
 @layout MainLayout
 
-<h3>Not Found</h3>
-<p>Sorry, the content you are looking for does not exist.</p>
+<PageTitle>Not Found - SpendSync PH</PageTitle>
+
+<div class="flex flex-col items-center justify-center py-16 text-center">
+    <div class="mb-4 rounded-full bg-slate-100 p-4 text-slate-400">
+        <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Large" />
+    </div>
+    <h3 class="text-2xl font-bold text-slate-800 mb-2">Not Found</h3>
+    <p class="text-slate-500 mb-6">Sorry, the content you are looking for does not exist.</p>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/" Class="normal-case font-semibold px-6 py-2 rounded-lg">
+        Back to Dashboard
+    </MudButton>
+</div>
