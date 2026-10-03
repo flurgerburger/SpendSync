@@ -1,19 +1,85 @@
 @page "/subscriptions"
+@inject ExpenseStateService ExpenseState
+@inject IDialogService DialogService
 
 <PageTitle>Subscriptions - SpendSync PH</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary" Class="font-bold flex items-center">
-    <MudIcon Icon="@Icons.Material.Filled.Autorenew" Class="mr-2" Size="Size.Medium" />
-    Subscriptions
-</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudPaper Elevation="0" Class="pa-5 mb-4" Style="border:1px solid #E9ECEF; border-radius:18px; background:linear-gradient(135deg, #F8F9FA, #E9ECEF);">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Secondary">Total Monthly Recurring Spend</MudText>
+                <MudText Typo="Typo.h4" Style="font-weight:700; color:#1E293B;">₱ @MonthlyRecurringSpend.ToString("N2")</MudText>
+            </MudItem>
 
-<MudText Typo="Typo.body1" Class="text-slate-500 mb-6 font-normal">
-    Monitor recurring charges (Netflix, Spotify, Internet, etc.) with automatic renewal alerts.
-</MudText>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.caption" Color="Color.Secondary">Annual Projected Spend</MudText>
+                <MudText Typo="Typo.h4" Style="font-weight:700; color:#1E293B;">₱ @AnnualProjectedSpend.ToString("N2")</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
 
-<MudPaper Class="p-6 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg rounded-xl" Elevation="2" Outlined="true">
-    <MudText Typo="Typo.h6" GutterBottom="true" Class="font-semibold text-slate-800">Subscriptions Placeholder</MudText>
-    <MudText Typo="Typo.body2" Class="text-slate-600">
-        This is the Subscriptions view. Recurring payments and renewal billing cycles will be configured here.
-    </MudText>
-</MudPaper>
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+        <MudText Typo="Typo.h5" Style="font-weight:700; color:#1E293B;">Your Subscriptions</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenAddSubscriptionDialog">
+            Add Subscription
+        </MudButton>
+    </MudStack>
+
+    <MudGrid>
+        @foreach (var item in SubscriptionCards)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="1" Class="pa-3" Style="border:1px solid #E9ECEF; border-radius:16px;">
+                    <MudCardContent>
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h6" Style="font-weight:700;">@item.Name</MudText>
+                            <MudSwitch T="bool" Value="@item.IsActive" ValueChanged="@(value => ToggleAutoRenew(item, value))" Label="Auto-Renew" Color="Color.Success" />
+                        </MudStack>
+
+                        <MudText Typo="Typo.body1" Class="mt-3" Style="font-weight:600;">₱ @item.MonthlyCost.ToString("N2") / month</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Renewal day: @item.NextBillingDate.Day</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private decimal MonthlyRecurringSpend => ExpenseState.Subscriptions
+        .Where(x => x.IsActive)
+        .Sum(x => x.MonthlyCost);
+
+    private decimal AnnualProjectedSpend => ExpenseState.Subscriptions
+        .Where(x => x.IsActive)
+        .Sum(x => x.MonthlyCost * 12m);
+
+    private List<Subscription> SubscriptionCards => ExpenseState.Subscriptions
+        .OrderBy(x => x.NextBillingDate)
+        .ToList();
+
+    private async Task OpenAddSubscriptionDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<AddSubscriptionModal>("Add Subscription", options);
+        var result = await dialog.Result;
+
+        if (result is not null && !result.Canceled && result.Data is Subscription newSubscription)
+        {
+            ExpenseState.AddSubscription(newSubscription);
+        }
+    }
+
+    private void ToggleAutoRenew(Subscription subscription, bool value)
+    {
+        subscription.IsActive = value;
+        ExpenseState.UpdateSubscription(subscription);
+    }
+}

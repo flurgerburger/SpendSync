@@ -6,12 +6,12 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="2" Color="Color.Primary" Fixed="true">
+    <MudAppBar Elevation="1" Color="Color.Surface" Fixed="true" Style="background:#FFFFFF; border-bottom:1px solid #E9ECEF; color:#1E293B;">
         <NavMenu />
     </MudAppBar>
 
     <MudMainContent Class="pt-16">
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-6">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="my-6">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -28,12 +28,18 @@
     {
         PaletteLight = new PaletteLight()
         {
-            Primary = "#1E88E5",
-            Secondary = "#26A69A",
-            AppbarBackground = "#1565C0",
-            Background = "#F5F7FB",
+            Primary = "#10B981",
+            Secondary = "#1E293B",
+            Background = "#F8F9FA",
             Surface = "#FFFFFF",
-            DrawerBackground = "#FFFFFF"
+            AppbarBackground = "#FFFFFF",
+            DrawerBackground = "#FFFFFF",
+            TextPrimary = "#1E293B",
+            TextSecondary = "#475569",
+            Success = "#10B981",
+            Warning = "#F59E0B",
+            Info = "#2EC4B6",
+            Divider = "#E9ECEF"
         }
     };
 }

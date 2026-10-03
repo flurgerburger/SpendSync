@@ -1,19 +1,116 @@
 @page "/expenses"
+@inject ExpenseStateService ExpenseState
+@inject IDialogService DialogService
 
 <PageTitle>Expenses - SpendSync PH</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary" Class="font-bold flex items-center">
-    <MudIcon Icon="@Icons.Material.Filled.ReceiptLong" Class="mr-2" Size="Size.Medium" />
-    Expenses
-</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+        <MudSelect T="string" Label="Trip / Category" Variant="Variant.Outlined" Value="SelectedTrip" ValueChanged="OnTripChanged" Style="min-width:220px;">
+            <MudSelectItem Value="@("Boracay Trip 2026")" />
+            <MudSelectItem Value="@("Daily Expenses")" />
+            <MudSelectItem Value="@("Office Budget")" />
+        </MudSelect>
 
-<MudText Typo="Typo.body1" Class="text-slate-500 mb-6 font-normal">
-    Log, manage, and categorize your day-to-day spending in Philippine Pesos (₱).
-</MudText>
+        <MudText Typo="Typo.h6" Color="Color.Primary" Style="font-weight:700;">Total Spend: ₱ @TotalTripSpend.ToString("N2")</MudText>
 
-<MudPaper Class="p-6 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg rounded-xl" Elevation="2" Outlined="true">
-    <MudText Typo="Typo.h6" GutterBottom="true" Class="font-semibold text-slate-800">Expenses Placeholder</MudText>
-    <MudText Typo="Typo.body2" Class="text-slate-600">
-        This is the Expenses view. Expense tables and add/edit modals will be added here in the upcoming step.
-    </MudText>
-</MudPaper>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenAddExpenseDialog">
+            Add Expense
+        </MudButton>
+    </MudStack>
+
+    <MudGrid>
+        <MudItem xs="12" md="8">
+            <MudPaper Elevation="0" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px; background:#FFFFFF;">
+                <MudTable Items="@FilteredExpenses" Dense="true" Hover="true" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Date</MudTh>
+                        <MudTh>Description</MudTh>
+                        <MudTh>Category</MudTh>
+                        <MudTh>Amount</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Date">@context.Date.ToString("MMM dd, yyyy")</MudTd>
+                        <MudTd DataLabel="Description">@context.Title</MudTd>
+                        <MudTd DataLabel="Category">
+                            <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Info">
+                                @context.Category
+                            </MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Amount">₱ @context.Amount.ToString("N2")</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="0" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px; background:#FFFFFF;">
+                <MudText Typo="Typo.h6" Style="font-weight:700; color:#1E293B;">Currency Converter</MudText>
+
+                <MudNumericField T="decimal" Label="PHP Amount" @bind-Value="PhpAmount" Immediate="true" Class="mt-3" />
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mt-2">Mock rates based on current conversion estimates.</MudText>
+
+                <MudStack Class="mt-4">
+                    <MudPaper Outlined="true" Class="pa-3" Style="border-radius:12px;">
+                        <MudText>USD</MudText>
+                        <MudText Typo="Typo.h6" Style="font-weight:700;">$ @UsdAmount.ToString("N2")</MudText>
+                    </MudPaper>
+
+                    <MudPaper Outlined="true" Class="pa-3" Style="border-radius:12px;">
+                        <MudText>JPY</MudText>
+                        <MudText Typo="Typo.h6" Style="font-weight:700;">¥ @JpyAmount.ToString("N2")</MudText>
+                    </MudPaper>
+
+                    <MudPaper Outlined="true" Class="pa-3" Style="border-radius:12px;">
+                        <MudText>EUR</MudText>
+                        <MudText Typo="Typo.h6" Style="font-weight:700;">€ @EurAmount.ToString("N2")</MudText>
+                    </MudPaper>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string SelectedTrip { get; set; } = "Boracay Trip 2026";
+    private decimal PhpAmount { get; set; } = 1500m;
+
+    private decimal UsdAmount => ConvertPhpToCurrency(PhpAmount, 0.018m);
+    private decimal JpyAmount => ConvertPhpToCurrency(PhpAmount, 2.68m);
+    private decimal EurAmount => ConvertPhpToCurrency(PhpAmount, 0.016m);
+
+    private List<Expense> FilteredExpenses => ExpenseState.Expenses
+        .OrderByDescending(x => x.Date)
+        .Take(8)
+        .ToList();
+
+    private decimal TotalTripSpend => FilteredExpenses.Sum(x => x.Amount);
+
+    private async Task OpenAddExpenseDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<AddExpenseModal>("Add Expense", options);
+        var result = await dialog.Result;
+
+        if (result is not null && !result.Canceled && result.Data is Expense newExpense)
+        {
+            ExpenseState.AddExpense(newExpense);
+        }
+    }
+
+    private void OnTripChanged(string value)
+    {
+        SelectedTrip = value;
+    }
+
+    private static decimal ConvertPhpToCurrency(decimal phpAmount, decimal rate)
+    {
+        return Math.Round(phpAmount * rate, 2);
+    }
+}

@@ -1,0 +1,49 @@
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form">
+            <MudStack Spacing="2">
+                <MudTextField Label="Service Name" @bind-Value="Model.Name" Required="true" />
+                <MudNumericField Label="Monthly Cost (₱)" @bind-Value="Model.Amount" Required="true" />
+                <MudSelect T="string" Label="Billing Cycle" @bind-Value="Model.BillingCycle">
+                    @foreach (var cycle in Subscription.BillingCycles)
+                    {
+                        <MudSelectItem Value="@cycle" />
+                    }
+                </MudSelect>
+                <MudDatePicker Label="Next Renewal Date" @bind-Date="NextBillingDate" />
+                <MudSwitch @bind-Value="Model.IsActive" Label="Auto-renew" Color="Color.Success" />
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private MudForm? _form;
+    public Subscription Model { get; set; } = new();
+    private DateTime? NextBillingDate { get; set; } = DateTime.Today.AddDays(30);
+
+    protected override void OnInitialized()
+    {
+        Model.BillingCycle = Subscription.BillingCycles.First();
+        Model.Category = Subscription.Categories.First();
+        Model.NextBillingDate = DateTime.Today.AddDays(30);
+        Model.IsActive = true;
+    }
+
+    private void Submit()
+    {
+        Model.NextBillingDate = NextBillingDate ?? DateTime.Today.AddDays(30);
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

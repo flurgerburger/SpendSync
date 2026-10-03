@@ -48,6 +48,6 @@ D:\vsCode\SpendSync\obj\Debug\net10.0\SpendSync.sourcelink.json
 D:\vsCode\SpendSync\obj\Debug\net10.0\compressed\eci9e89v4c-{0}-s8r0dfiuaw-s8r0dfiuaw.gz
 D:\vsCode\SpendSync\bin\Debug\net10.0\package-lock.json
 D:\vsCode\SpendSync\bin\Debug\net10.0\package.json
-D:\vsCode\SpendSync\obj\Debug\net10.0\compressed\f4qfi5er6e-{0}-irfkdgs2g9-irfkdgs2g9.gz
 D:\vsCode\SpendSync\obj\Debug\net10.0\compressed\5e15er6lfh-{0}-50s8g5k8ls-50s8g5k8ls.gz
 D:\vsCode\SpendSync\obj\Debug\net10.0\compressed\3b6x9s62gf-{0}-50s8g5k8ls-50s8g5k8ls.gz
+D:\vsCode\SpendSync\obj\Debug\net10.0\compressed\f4qfi5er6e-{0}-rb6wdf27g7-rb6wdf27g7.gz

@@ -1,0 +1,46 @@
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form">
+            <MudStack Spacing="2">
+                <MudTextField Label="Description" @bind-Value="Model.Title" Required="true" />
+                <MudNumericField Label="Amount (₱)" @bind-Value="Model.Amount" Required="true" />
+                <MudSelect T="string" Label="Category" @bind-Value="Model.Category">
+                    @foreach (var category in Expense.Categories)
+                    {
+                        <MudSelectItem Value="@category" />
+                    }
+                </MudSelect>
+                <MudDatePicker Label="Date" @bind-Date="ModelDate" />
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private MudForm? _form;
+    public Expense Model { get; set; } = new();
+    private DateTime? ModelDate { get; set; } = DateTime.Today;
+
+    protected override void OnInitialized()
+    {
+        Model.Date = DateTime.Today;
+        Model.Category = Expense.Categories.First();
+    }
+
+    private void Submit()
+    {
+        Model.Date = ModelDate ?? DateTime.Today;
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

@@ -30,6 +30,14 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/vsCode/SpendSync/Components/Modals/AddExpenseModal.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2RhbHNcQWRkRXhwZW5zZU1vZGFsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vsCode/SpendSync/Components/Modals/AddSubscriptionModal.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2RhbHNcQWRkU3Vic2NyaXB0aW9uTW9kYWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/vsCode/SpendSync/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

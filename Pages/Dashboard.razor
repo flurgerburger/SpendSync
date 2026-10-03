@@ -1,20 +1,158 @@
 @page "/"
 @page "/dashboard"
+@inject ExpenseStateService ExpenseState
+@inject IDialogService DialogService
 
 <PageTitle>Dashboard - SpendSync PH</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary" Class="font-bold flex items-center">
-    <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-2" Size="Size.Medium" />
-    Dashboard
-</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudStack Spacing="3">
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h4" Style="font-weight:700; color:#1E293B;">
+                <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-2" Size="Size.Medium" Color="Color.Primary" />
+                Dashboard
+            </MudText>
 
-<MudText Typo="Typo.body1" Class="text-slate-500 mb-6 font-normal">
-    Welcome to SpendSync PH! Track your Philippine Peso (₱) budget, overview of monthly expenses, and active subscriptions.
-</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenAddExpenseDialog">
+                Add Expense
+            </MudButton>
+        </MudStack>
 
-<MudPaper Class="p-6 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-lg rounded-xl" Elevation="2" Outlined="true">
-    <MudText Typo="Typo.h6" GutterBottom="true" Class="font-semibold text-slate-800">Overview Placeholder</MudText>
-    <MudText Typo="Typo.body2" Class="text-slate-600">
-        This is the Dashboard landing page. Metrics and summaries will appear here in the next step.
-    </MudText>
-</MudPaper>
+        <MudGrid>
+            <MudItem xs="12" md="4">
+                <MudCard Elevation="1" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Total Income</MudText>
+                        <MudText Typo="Typo.h5" Style="font-weight:700;">₱ @TotalIncome.ToString("N2")</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudCard Elevation="1" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Total Spent</MudText>
+                        <MudText Typo="Typo.h5" Style="font-weight:700;">₱ @TotalSpent.ToString("N2")</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudCard Elevation="1" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px;">
+                    <MudCardContent>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">Remaining Allowance</MudText>
+                        <MudText Typo="Typo.h5" Style="font-weight:700;">₱ @RemainingAllowance.ToString("N2")</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+
+        <MudGrid>
+            <MudItem xs="12" md="5">
+                <MudPaper Elevation="0" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px; background:#FFFFFF;">
+                    <MudText Typo="Typo.h6" Style="font-weight:700; color:#1E293B;">Top Spending Categories</MudText>
+
+                    <MudList T="string" Class="mt-3">
+                        @foreach (var category in TopCategories)
+                        {
+                            <MudListItem Dense="true">
+                                <div class="d-flex justify-space-between align-center w-100">
+                                    <MudText>@category.Name</MudText>
+                                    <MudText Color="Color.Primary" Style="font-weight:600;">₱ @category.Amount.ToString("N2")</MudText>
+                                </div>
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="7">
+                <MudPaper Elevation="0" Class="pa-4" Style="border:1px solid #E9ECEF; border-radius:16px; background:#FFFFFF;">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6" Style="font-weight:700; color:#1E293B;">Upcoming Subscriptions</MudText>
+                    </MudStack>
+
+                    <MudStack Class="mt-3">
+                        @foreach (var sub in UpcomingSubscriptions)
+                        {
+                            <MudPaper Outlined="true" Class="pa-3" Style="border-radius:12px; border-color:#E9ECEF;">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                    <MudText Style="font-weight:600;">@sub.Name</MudText>
+                                    <MudChip T="string" Color="Color.Warning" Variant="Variant.Filled" Size="Size.Small">Due Soon</MudChip>
+                                </MudStack>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    ₱ @sub.MonthlyCost.ToString("N2") • @sub.NextBillingDate.ToString("MMM dd")
+                                </MudText>
+                            </MudPaper>
+                        }
+                    </MudStack>
+
+                    <MudText Typo="Typo.h6" Class="mt-5 mb-2" Style="font-weight:700; color:#1E293B;">Recent Transactions</MudText>
+                    <MudTable Items="@RecentExpenses" Dense="true" Hover="true" Elevation="0">
+                        <HeaderContent>
+                            <MudTh>Date</MudTh>
+                            <MudTh>Description</MudTh>
+                            <MudTh>Category</MudTh>
+                            <MudTh>Amount</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Date">@context.Date.ToString("MMM dd")</MudTd>
+                            <MudTd DataLabel="Description">@context.Title</MudTd>
+                            <MudTd DataLabel="Category">@context.Category</MudTd>
+                            <MudTd DataLabel="Amount">₱ @context.Amount.ToString("N2")</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudStack>
+</MudContainer>
+
+@code {
+    private decimal TotalIncome => 50000m;
+    private decimal TotalSpent => ExpenseState.Expenses.Sum(x => x.Amount);
+    private decimal RemainingAllowance => TotalIncome - TotalSpent;
+
+    private List<CategorySpend> TopCategories => ExpenseState.Expenses
+        .GroupBy(x => x.Category)
+        .Select(g => new CategorySpend
+        {
+            Name = g.Key,
+            Amount = g.Sum(x => x.Amount)
+        })
+        .OrderByDescending(x => x.Amount)
+        .Take(3)
+        .ToList();
+
+    private List<Subscription> UpcomingSubscriptions => ExpenseState.Subscriptions
+        .Where(x => x.IsActive && x.NextBillingDate <= DateTime.Today.AddDays(14))
+        .OrderBy(x => x.NextBillingDate)
+        .Take(3)
+        .ToList();
+
+    private List<Expense> RecentExpenses => ExpenseState.GetRecentExpenses(5).ToList();
+
+    private async Task OpenAddExpenseDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<AddExpenseModal>("Add Expense", options);
+        var result = await dialog.Result;
+
+        if (result is not null && !result.Canceled && result.Data is Expense newExpense)
+        {
+            ExpenseState.AddExpense(newExpense);
+        }
+    }
+
+    private sealed class CategorySpend
+    {
+        public string Name { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+    }
+}
